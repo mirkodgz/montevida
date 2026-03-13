@@ -8,15 +8,51 @@ import { getStoreProducts, getSanityPostBySlug, getSanityPosts } from "@/sanity/
 import { notFound } from "next/navigation";
 import { PortableText } from '@portabletext/react'
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+import type { Metadata } from "next";
+import { urlForImage } from "@/sanity/lib/image";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
     const post = await getSanityPostBySlug(slug);
+    
     if (!post) {
-        return { title: 'Post no encontrado' };
+        return { title: 'Artículo no encontrado | Montevida Blog' };
     }
+
+    const title = `${post.title} | Montevida Blog`;
+    const description = post.excerpt || "Lee más en el blog de Montevida. Información sobre salud, bienestar y productos naturales.";
+    const articleUrl = `https://montevida.pe/blogs/${slug}`;
+    
+    // Asumimos que post.img podría ser una URL cruda o un string. Ajustalo si es un objeto de Sanity
+    const defaultImg = post.img || '/images/logo/LogoMonteVida-png.webp';
+
     return {
-        title: `${post.title} | Montevida Blog`,
-        description: post.excerpt || "Lee más en el blog de Montevida",
+        title,
+        description,
+        alternates: {
+          canonical: articleUrl,
+        },
+        openGraph: {
+            title,
+            description,
+            url: articleUrl,
+            images: [
+                {
+                    url: defaultImg,
+                    width: 800,
+                    height: 500,
+                    alt: post.title,
+                }
+            ],
+            type: "article",
+            publishedTime: post.date, // Añadiendo tiempo de publicación de OPenGraph para artículos
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: [defaultImg],
+        }
     }
 }
 

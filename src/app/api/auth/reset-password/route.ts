@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "next-sanity";
+import { createClient, groq } from "next-sanity";
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 import bcrypt from "bcryptjs";
 
@@ -25,8 +25,8 @@ export async function POST(req: Request) {
 
     const now = new Date().toISOString();
 
-    const query = `*[_type == "user" && resetPasswordToken == $token && resetPasswordExpires > $now][0]`;
-    const user = await writeClient.fetch(query, { token, now });
+    const query = groq`*[_type == "user" && resetPasswordToken == $token && resetPasswordExpires > $now][0]`;
+    const user = await writeClient.fetch(query, { token, now } as any);
 
     if (!user) {
       return NextResponse.json({ message: "El enlace de recuperación es inválido o ha expirado." }, { status: 400 });
