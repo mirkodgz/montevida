@@ -119,8 +119,8 @@ const ShopDetails = ({ currentProduct }: { currentProduct?: Product }) => {
           <section className="overflow-hidden relative pb-20">
             <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
               <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
-                <div className="lg:max-w-[570px] w-full">
-                  <div className="lg:min-h-[512px] rounded-lg shadow-1 bg-gray-2 p-4 sm:p-7.5 relative flex items-center justify-center">
+                <div className="lg:max-w-[570px] w-full flex flex-col items-center">
+                  <div className="lg:min-h-[512px] w-full rounded-lg shadow-1 bg-gray-2 p-4 sm:p-7.5 relative flex flex-col items-center justify-center">
                     <div>
                       <button
                         onClick={handlePreviewSlider}
@@ -153,6 +153,30 @@ const ShopDetails = ({ currentProduct }: { currentProduct?: Product }) => {
                         />
                       )}
                     </div>
+
+                    {/* <!-- Additional Gallery Images --> */}
+                    {product.imgs?.previews && product.imgs.previews.length > 1 && (
+                      <div className="flex gap-3 mt-4 overflow-x-auto pb-2 custom-scrollbar w-full max-w-[400px]">
+                        {product.imgs.previews.map((img, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setPreviewImg(index)}
+                            className={`flex flex-shrink-0 items-center justify-center w-20 h-20 rounded-md border-2 overflow-hidden ${
+                              previewImg === index ? "border-blue" : "border-transparent"
+                            } ease-out duration-200 hover:border-blue`}
+                          >
+                            <Image
+                              src={img}
+                              alt={`gallery-image-${index}`}
+                              width={80}
+                              height={80}
+                              className="object-cover w-full h-full"
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
                   </div>
                 </div>
 
@@ -348,9 +372,17 @@ const ShopDetails = ({ currentProduct }: { currentProduct?: Product }) => {
                       Detalles del Producto
                     </h2>
 
-                    <p className="mb-6 text-dark max-w-none">
-                      {product.shortDescription || "Este producto no tiene una descripción detallada en este momento."}
-                    </p>
+                    <div className="mb-6 text-dark max-w-none flex flex-col gap-4">
+                      {product.shortDescription ? (
+                        Array.isArray(product.shortDescription) ? (
+                            <PortableText value={product.shortDescription as any} />
+                        ) : (
+                            <p>{product.shortDescription}</p>
+                        )
+                      ) : (
+                        <p>Este producto no tiene una descripción detallada en este momento.</p>
+                      )}
+                    </div>
 
                     {product.presentation && (
                       <>

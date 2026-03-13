@@ -9,7 +9,7 @@ export type Product = {
     previews: string[];
   };
   categories?: string[];
-  shortDescription?: string;
+  shortDescription?: any;
   presentation?: string;
   slug?: string;
   isHeroCarousel?: boolean;

@@ -37,9 +37,10 @@ export const productType = defineType({
         defineField({
             name: 'shortDescription',
             title: 'Descripcion Corta',
-            type: 'text',
-            description: 'Breve resumen de los beneficios.',
-        }),
+            type: 'array',
+            of: [{ type: 'block' }],
+            description: 'Breve resumen de los beneficios. Puedes usar negritas y saltos de línea.',
+        } as any),
         defineField({
             name: 'presentation',
             title: 'Cantidad / Presentacion',
@@ -53,12 +54,19 @@ export const productType = defineType({
             of: [{ type: 'reference', to: [{ type: 'category' }] }],
         } as any),
         defineField({
-            name: 'images',
-            title: 'Imagenes',
+            name: 'mainImage',
+            title: 'Foto Principal',
+            type: 'image',
+            description: 'Esta será la imagen de portada del producto y la que aparecerá en los listados.',
+            options: { hotspot: true },
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+            name: 'gallery',
+            title: 'Fotos Variadas (Galería)',
             type: 'array',
             of: [{ type: 'image', options: { hotspot: true } }],
-            validation: (Rule) => Rule.required().min(1),
-            description: 'Sube al menos 1 imagen. Idealmente 2 para el efecto al pasar el mouse.',
+            description: 'Estas son las imágenes adicionales que se mostrarán en la página individual del producto (debajo de la foto principal).',
         } as any),
         defineField({
             name: 'isHeroCarousel',
@@ -85,7 +93,7 @@ export const productType = defineType({
     preview: {
         select: {
             title: 'title',
-            media: 'images.0',
+            media: 'mainImage',
             price: 'price',
         },
         prepare(selection) {

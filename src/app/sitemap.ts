@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Páginas estáticas principales
   const staticPages = [
     '',
-    '/shop',
+    '/tienda',
     '/blogs',
     '/contact',
     '/iniciar-sesion',

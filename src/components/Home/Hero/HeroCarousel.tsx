@@ -36,9 +36,7 @@ const HeroCarousal = ({ products }: { products: Product[] }) => {
                   <Link href={`/producto/${product.slug}`}>{product.title}</Link>
                 </h1>
 
-                <p>
-                  {product.shortDescription || "Descubre este increíble producto."}
-                </p>
+
 
                 <Link
                   href={`/producto/${product.slug}`}

@@ -14,13 +14,26 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         return { title: 'Producto no encontrado | Montevida' };
     }
 
+    const extractText = (blocks: any) => {
+      if (typeof blocks === 'string') return blocks;
+      if (Array.isArray(blocks)) {
+         return blocks.map(block => {
+             if (block._type !== 'block' || !block.children) {
+                 return '';
+             }
+             return block.children.map((child: any) => child.text).join('');
+         }).join(' ');
+      }
+      return "Descubre más detalles sobre nuestro producto en Montevida.";
+    }
+
     const title = `${product.title} | Montevida`;
-    const description = product.shortDescription || "Descubre más detalles sobre nuestro producto en Montevida.";
+    const description = product.shortDescription ? extractText(product.shortDescription) : "Descubre más detalles sobre nuestro producto en Montevida.";
     const productUrl = `https://montevida.pe/producto/${slug}`;
     
     let defaultImg = '/images/logo/LogoMonteVida-png.webp';
     if (product.imgs?.thumbnails && product.imgs.thumbnails.length > 0) {
-        defaultImg = urlForImage(product.imgs.thumbnails[0]).url();
+        defaultImg = product.imgs.thumbnails[0];
     }
 
     return {
@@ -62,7 +75,20 @@ const ProductDetailsPage = async ({ params }: { params: Promise<{ slug: string }
 
     let defaultImg = 'https://www.montevida.pe/images/logo/LogoMonteVida-png.webp';
     if (product.imgs?.thumbnails && product.imgs.thumbnails.length > 0) {
-        defaultImg = urlForImage(product.imgs.thumbnails[0]).url();
+        defaultImg = product.imgs.thumbnails[0];
+    }
+
+    const extractText = (blocks: any) => {
+      if (typeof blocks === 'string') return blocks;
+      if (Array.isArray(blocks)) {
+         return blocks.map(block => {
+             if (block._type !== 'block' || !block.children) {
+                 return '';
+             }
+             return block.children.map((child: any) => child.text).join('');
+         }).join(' ');
+      }
+      return "";
     }
 
     const jsonLd = {
@@ -70,7 +96,7 @@ const ProductDetailsPage = async ({ params }: { params: Promise<{ slug: string }
       "@type": "Product",
       name: product.title,
       image: defaultImg,
-      description: product.shortDescription,
+      description: extractText(product.shortDescription),
       offers: {
         "@type": "Offer",
         url: `https://www.montevida.pe/producto/${slug}`,

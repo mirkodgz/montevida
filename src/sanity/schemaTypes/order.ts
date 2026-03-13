@@ -48,7 +48,7 @@ export default defineType({
             select: {
               title: 'product.title',
               subtitle: 'quantity',
-              media: 'product.images.0',
+              media: 'product.mainImage',
             },
             prepare(selection) {
               const { title, subtitle, media } = selection

@@ -16,8 +16,8 @@ export async function getSanityProducts(): Promise<Product[]> {
       isPromoSection,
       "slug": slug.current,
       "categories": categories[]->title,
-      "imageUrl": images[0].asset->url,
-      "hoverImageUrl": images[1].asset->url
+      "imageUrl": mainImage.asset->url,
+      "galleryUrls": gallery[].asset->url
     }`
     )
 
@@ -34,11 +34,11 @@ export async function getSanityProducts(): Promise<Product[]> {
         imgs: {
             thumbnails: [
                 p.imageUrl || '/placeholder-img-product.jpg',
-                p.hoverImageUrl || p.imageUrl || '/placeholder-img-product.jpg'
+                ...(p.galleryUrls || [])
             ],
             previews: [
                 p.imageUrl || '/placeholder-img-product.jpg',
-                p.hoverImageUrl || p.imageUrl || '/placeholder-img-product.jpg'
+                ...(p.galleryUrls || [])
             ]
         },
         categories: p.categories || [],
@@ -62,8 +62,8 @@ export async function getSanityProductBySlug(slug: string): Promise<Product | nu
       discountedPrice,
       "slug": slug.current,
       "categories": categories[]->title,
-      "imageUrl": images[0].asset->url,
-      "hoverImageUrl": images[1].asset->url,
+      "imageUrl": mainImage.asset->url,
+      "galleryUrls": gallery[].asset->url,
       shortDescription,
       presentation
     }`, { slug }
@@ -80,11 +80,11 @@ export async function getSanityProductBySlug(slug: string): Promise<Product | nu
         imgs: {
             thumbnails: [
                 p.imageUrl || '/placeholder-img-product.jpg',
-                p.hoverImageUrl || p.imageUrl || '/placeholder-img-product.jpg'
+                ...(p.galleryUrls || [])
             ],
             previews: [
                 p.imageUrl || '/placeholder-img-product.jpg',
-                p.hoverImageUrl || p.imageUrl || '/placeholder-img-product.jpg'
+                ...(p.galleryUrls || [])
             ]
         },
         categories: p.categories || [],

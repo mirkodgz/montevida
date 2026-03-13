@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { addItemToCart } from "@/redux/features/cart-slice";
+import { addItemToWishlist } from "@/redux/features/wishlist-slice";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { resetQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
@@ -37,8 +39,19 @@ const QuickViewModal = () => {
         quantity,
       })
     );
-
+    toast.success("Producto añadido al carrito");
     closeModal();
+  };
+
+  // add to wishlist
+  const handleAddToWishlist = () => {
+    dispatch(
+      addItemToWishlist({
+        ...product,
+        quantity: 1,
+      })
+    );
+    toast.success("Producto añadido a favoritos");
   };
 
   useEffect(() => {
@@ -283,7 +296,18 @@ const QuickViewModal = () => {
 
               <p className="text-dark-4 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
                 {product?.shortDescription ? (
-                   product.shortDescription.split(' ').slice(0, 40).join(' ') + (product.shortDescription.split(' ').length > 40 ? '...' : '')
+                  (() => {
+                    let text = '';
+                    if (typeof product.shortDescription === 'string') {
+                      text = product.shortDescription;
+                    } else if (Array.isArray(product.shortDescription)) {
+                      text = product.shortDescription.map((block: any) => {
+                        if (block._type !== 'block' || !block.children) return '';
+                        return block.children.map((child: any) => child.text).join('');
+                      }).join(' ');
+                    }
+                    return text.split(' ').slice(0, 20).join(' ') + (text.split(' ').length > 20 ? '...' : '');
+                  })()
                 ) : (
                   "Este producto no tiene una descripción detallada visible en la vista rápida."
                 )}
@@ -383,6 +407,7 @@ const QuickViewModal = () => {
                 </button>
 
                 <button
+                  onClick={handleAddToWishlist}
                   className={`inline-flex items-center gap-2 font-medium text-white bg-dark py-3 px-6 rounded-md ease-out duration-200 hover:bg-opacity-95 `}
                 >
                   <svg
