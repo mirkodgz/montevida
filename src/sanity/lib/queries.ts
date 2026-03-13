@@ -18,7 +18,9 @@ export async function getSanityProducts(): Promise<Product[]> {
       "categories": categories[]->title,
       "imageUrl": mainImage.asset->url,
       "galleryUrls": gallery[].asset->url
-    }`
+    }`,
+        {},
+        { cache: 'no-store' }
     )
 
     return products.map((p: any) => ({
@@ -48,7 +50,9 @@ export async function getSanityProducts(): Promise<Product[]> {
 
 export async function getSanityCategories(): Promise<string[]> {
     const categories = await client.fetch(
-        groq`*[_type == "category"] { title }`
+        groq`*[_type == "category"] { title }`,
+        {},
+        { cache: 'no-store' }
     )
     return categories.map((c: any) => c.title)
 }
@@ -66,7 +70,9 @@ export async function getSanityProductBySlug(slug: string): Promise<Product | nu
       "galleryUrls": gallery[].asset->url,
       shortDescription,
       presentation
-    }`, { slug }
+    }`, 
+        { slug },
+        { cache: 'no-store' }
     )
 
     if (!p) return null;
@@ -111,7 +117,9 @@ export async function getSanityPosts(): Promise<BlogItem[]> {
             publishedAt,
             excerpt,
             body
-        }`
+        }`,
+        {},
+        { cache: 'no-store' }
     )
     return posts.map((p: any) => ({
         title: p.title,
@@ -133,7 +141,9 @@ export async function getSanityPostBySlug(slug: string): Promise<BlogItem | null
             publishedAt,
             excerpt,
             body
-        }`, { slug }
+        }`, 
+        { slug },
+        { cache: 'no-store' }
     )
     if (!post) return null;
     return {
