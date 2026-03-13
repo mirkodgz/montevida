@@ -4,8 +4,6 @@ import { apiVersion, dataset, projectId } from "@/sanity/env";
 import crypto from "crypto";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const writeClient = createClient({
   projectId,
   dataset,
@@ -15,6 +13,8 @@ const writeClient = createClient({
 });
 
 export async function POST(req: Request) {
+  const resend = new Resend(process.env.RESEND_API_KEY || 're_fallback');
+
   try {
     const { email } = await req.json();
 
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     }
 
     const query = `*[_type == "user" && email == $email][0]`;
-    const user = await writeClient.fetch(query, { email });
+    const user = await writeClient.fetch(query, { email } as any);
 
     // For security reasons, do not leak whether the email exists.
     if (!user) {
